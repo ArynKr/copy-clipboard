@@ -5,7 +5,13 @@ function App() {
   const copyText = async (text) => {
     try {
       if(navigator?.clipboard?.writeText) {
-        await navigator.clipboard.writeText(text);
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch (err) {
+          console.error('Failed to copy text: ', err);
+        }
+      } else {
+        console.log('clipboard API not supported');
       }
     } catch(e) {
       console.log(e)
@@ -22,7 +28,7 @@ function App() {
     <div className="App" style={{fontSize: '2rem', display:'flex', flexDirection: 'column', gap: '1rem'}}>
 
       <button
-        onClick={fetchUrlToCopy}
+        onPointerDown={fetchUrlToCopy}
        style={{outline: 'none'}}>Click to copy</button>
       <br />
       <input type="text" name="" id="" placeholder='Paste to check' style={{padding: '1rem', fontSize: '2rem' , width: '50rem'}} />

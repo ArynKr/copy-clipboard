@@ -2,6 +2,24 @@ import axios from 'axios'
 import './App.css'
 
 function App() {
+  async function simpleCopy() {
+    const clipboardItem = new ClipboardItem({
+      'text/plain': axios.get('https://jsonplaceholder.typicode.com/todos/1').then(async (res) => {
+        if(!res) {
+          return  new Promise(async (resolve) => {
+            resolve(new Blob([``], {type: 'text/plain'}))
+          })
+        }
+        console.log(res.data.title);
+        const copyText = res.data.title;
+        return new Promise(async (resolve) => {
+          resolve(new Blob([copyText], {type: 'text/plain'}))
+        })
+      })
+    })
+    navigator.clipboard.write([clipboardItem])
+  }
+  
   const copyText = async (text) => {
     try {
       if(navigator?.clipboard?.writeText) {
@@ -29,6 +47,9 @@ function App() {
 
       <button
         onPointerDown={fetchUrlToCopy}
+       style={{outline: 'none'}}>Click to copy</button>
+      <button
+        onPointerDown={simpleCopy}
        style={{outline: 'none'}}>Click to copy</button>
       <br />
       <input type="text" name="" id="" placeholder='Paste to check' style={{padding: '1rem', fontSize: '2rem' , width: '50rem'}} />
